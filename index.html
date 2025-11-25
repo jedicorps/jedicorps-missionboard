@@ -71,49 +71,56 @@
         // Later: auto-tweet stub when we have API
       }
     }
-    async function loadReliefWebData(countryCode = 'MX') {
-      const iso3Map = { "MX":"MEX","PH":"PHL","TR":"TUR","SY":"SYR","UA":"UKR","AF":"AFG","US":"USA","GLOBAL":"GLOBAL" };
-      const iso3 = iso3Map[countryCode] || countryCode;
+    <script>
+async function loadReliefWebData(countryCode = 'MX') {
+  const iso3Map = { "MX":"MEX","PH":"PHL","TR":"TUR","SY":"SYR","UA":"UKR","AF":"AFG","US":"USA","GLOBAL":"GLOBAL" };
+  const iso3 = iso3Map[countryCode] || countryCode;
 
-      try {
-        const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=jedicorps&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`);
-        const json = await res.json();
-
-        const tbody = document.querySelector('#mission-table tbody');
-        tbody.innerHTML = ''; // clear everything
-
-        if (json.data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7">No live reports for this country yet</td></tr>';
-          return;
-        }
-
-        json.data.forEach(item => {
-          const f = item.fields;
-          const date = f.date?.created?.slice(0,10) || 'N/A';
-          const hearts = '💜'.repeat(Math.min(5, (f.theme?.length || 0) + (f.format?.length > 1 ? 2 : 1)));
-          const title = f.title || 'Untitled';
-
-          tbody.innerHTML += `<tr>
-            <td>${date}</td>
-            <td class="impact">${hearts}</td>
-            <td>${title}</td>
-            <td>Ongoing</td>
-            <td>—</td>
-            <td>—</td>
-            <td><a href="${item.href}" target="_blank">View →</a></td>
-          </tr>`;
-        });
-
-      } catch (e) {
-        console.error('ReliefWeb error:', e);
-        document.querySelector('#mission-table tbody').innerHTML = '<tr><td colspan="7">Live data offline – showing samples</td></tr>';
+  try {
+    const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=jedicorps&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`, {
+      headers: {
+        'User-Agent': 'JEDI Corps Mission Board v1.0 (+https://jedicorps.app)'
       }
+    });
+    const json = await res.json();
+
+    const tbody = document.querySelector('#mission-table tbody');
+    tbody.innerHTML = '';
+
+    if (!json.data || json.data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7">No reports right now – try another country later</td></tr>';
+      return;
     }
 
-    // Run on load
-    window.onload = () => {
-      toggleGrokScout();
-      loadReliefWebData('MX');
+    json.data.forEach(item => {
+      const f = item.fields;
+      const date = f.date?.created?.slice(0,10) || 'N/A';
+      const hearts = 'Heart'.repeat(Math.min(5, (f.theme?.length || 0) + (f.format?.length > 1 ? 2 : 1)));
+      const title = f.title || 'Untitled report';
+
+      tbody.innerHTML += `<tr>
+        <td>${date}</td>
+        <td class="impact">${hearts}</td>
+        <td>${title}</td>
+        <td>Ongoing</td>
+        <td>—</td>
+        <td>—</td>
+        <td><a href="${item.href}" target="_blank">View</a></td>
+      </tr>`;
+    });
+
+  } catch (e) {
+    console.error('ReliefWeb blocked:', e);
+    document.querySelector('#mission-table tbody').innerHTML = '<tr><td colspan="7">Live data offline – showing samples</td></tr>';
+  }
+}
+
+window.onload = () => {
+  toggleGrokScout();
+  loadReliefWebData('MX');
+};
+</script>
+
     };
   </script>
 </body>

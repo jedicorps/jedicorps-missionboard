@@ -17,27 +17,34 @@
 <body>
   <h1>JEDI Corps Mission Board 💜⚡️</h1>
   <p>Humanitarian Dashboard: Forex Factory for Philanthropy. Live data incoming...</p>
-  <div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-weight:bold;"></div>
-
-<button id="grok-btn" class="grok-btn" onclick="toggleGrokScout()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
-
-<script>
+  <script>
 function toggleGrokScout() {
-  // Check for X login cookies (auth_token or twid = real user)
-  const isLoggedInX = document.cookie.includes('auth_token') || document.cookie.includes('twid');
+  // Check for X login cookies (twid or auth_token; covers .x.com / .twitter.com domains)
+  const cookies = document.cookie;
+  const isLoggedInX = cookies.includes('auth_token=') || cookies.includes('twid=') || 
+                      cookies.includes('auth_token') || cookies.includes('twid'); // Broad match
   const status = document.getElementById('user-status');
   const btn = document.getElementById('grok-btn');
+  
+  // Debug: Log cookies to console (open DevTools > Console to see)
+  console.log('All cookies:', cookies);
+  console.log('X login detected?', isLoggedInX);
   
   if (isLoggedInX) {
     status.innerHTML = '✅ X Verified – Grok Scout Active! 💜';
     btn.innerHTML = 'Rainmaker Ready: "10k MREs for Acapulco?"';
     btn.style.background = '#4a90e2'; // Blue for unlocked
-    btn.onclick = () => alert('Query sent to Grok! (Stub – full Rainmaker next)'); // Placeholder
+    btn.onclick = () => alert('Query sent to Grok! (Stub – full Rainmaker next)');
   } else {
-    status.innerHTML = '⚠️ Not detected – Open x.com in another tab, log in, then refresh.';
+    status.innerHTML = '⚠️ X Login Not Detected – Open x.com in another tab, log in, then refresh. (Check console for cookies)';
     btn.style.background = '#9370db'; // Purple for locked
+    btn.onclick = () => {
+      window.open('https://x.com/login', '_blank');
+      alert('Logged in? Refresh jedicorps.app to unlock.');
+    };
   }
 }
+
 // Run on load
 window.onload = toggleGrokScout;
 </script>

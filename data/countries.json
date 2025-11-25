@@ -1,0 +1,11 @@
+[
+  {"code":"MX","name":"Mexico","flag":"MX"},
+  {"code":"PH","name":"Philippines","flag":"PH"},
+  {"code":"AE","name":"United Arab Emirates","flag":"AE"},
+  {"code":"SY","name":"Syria","flag":"SY"},
+  {"code":"TR","name":"Türkiye","flag":"TR"},
+  {"code":"US","name":"United States","flag":"US"},
+  {"code":"UA","name":"Ukraine","flag":"UA"},
+  {"code":"AF","name":"Afghanistan","flag":"AF"},
+  {"code":"GLOBAL","name":"Global / Multi-country","flag":"Global"}
+]

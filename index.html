@@ -18,7 +18,7 @@
   <h1>JEDI Corps Mission Board 💜⚡️</h1>
   <p>Humanitarian Dashboard: Forex Factory for Philanthropy. Live data incoming...</p>
 <div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-weight:bold;"></div>
-<button id="grok-btn" class="grok-btn" onclick="toggleGrokScout()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
+<button id="grok-btn" class="grok-btn" onclick="RainmakerQuery()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
 
 <script>
 function toggleGrokScout() {
@@ -41,6 +41,15 @@ function toggleGrokScout() {
   }
 }
 window.onload = toggleGrokScout;
+  function rainmakerQuery() {
+  const query = prompt('Rainmaker query (e.g. "10k MREs for Acapulco")');
+  if (query) {
+    alert(`Mission queued: "${query}"\n→ Logged to @LighthouseAid ledger\n→ Funds route via $JEDICorps when received`);
+    // Later: auto-tweet stub when we have API
+  }
+}
+</div>
+
 </script>
   <table>
     <thead>
@@ -63,14 +72,8 @@ window.onload = toggleGrokScout;
     ₿ bc1qpyxl87a3dsk7c3aff9xlxyj2u24wyt7hwtc5ax
   </code><br><br>
   Every dollar logged live <a href="https://x.com/LighthouseAid" target="_blank">here</a>
-function rainmakerQuery() {
-  const query = prompt('Rainmaker query (e.g. "10k MREs for Acapulco")');
-  if (query) {
-    alert(`Mission queued: "${query}"\n→ Logged to @LighthouseAid ledger\n→ Funds route via $JEDICorps when received`);
-    // Later: auto-tweet stub when we have API
-  }
-}
-</div>
 
+</div>
+    
 </body>
 </html>

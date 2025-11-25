@@ -65,102 +65,50 @@ window.onload = toggleGrokScout;
       <tr><td>05 Dec 2025</td><td class="impact">💜💜</td><td>Türkiye-Syria EQ Appeal Close-out</td><td>68% funded</td><td>100%</td><td>72% (prior)</td><td><a href="#">[Stub]</a></td></tr>
     </tbody>
   </table>
+
 <script>
-async function loadReliefWebData() {
-  const body = JSON.stringify({
-    appname: 'jedicorps',
-    limit: 5,
-    filter: { field: 'primary_country.name', value: 'Mexico' }, // Swap 'Mexico' for any ISO code
-    fields: { include: ['date.created', 'headline', 'primary_country.name', 'format'] },
-    sort: { field: 'date.created', order: 'desc' }
-  });
-  
-  try {
-    const response = await fetch('https://api.reliefweb.int/v2/reports', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body
-    });
-    const data = await response.json();
-    
-    const tbody = document.querySelector('#mission-table tbody');
-    tbody.innerHTML = ''; // Clear samples
-    
-    data.data.forEach(report => {
-      const fields = report.fields;
-      const date = fields['date.created']?.slice(0, 10) || 'N/A';
-      const impact = '💜'.repeat(Math.min(5, fields.format?.length || 1));
-      const event = fields.headline || 'N/A';
-      const actual = fields['primary_country.name'] || 'Ongoing';
-      
-      const row = tbody.insertRow();
-      row.innerHTML = `
-        <td>${date}</td>
-        <td class="impact">${impact}</td>
-        <td>${event}</td>
-        <td>${actual}</td>
-        <td>Ongoing</td>
-        <td>N/A</td>
-        <td><a href="https://reliefweb.int/report/${report.id}" target="_blank">Stub</a></td>
-      `;
-    });
-  } catch (error) {
-    console.error('ReliefWeb fetch failed:', error); // Fallback to samples if offline
-  }
-}
-
-// Load on page ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadReliefWebData);
-} else {
-  loadReliefWebData();
-}
-</script>
 async function loadReliefWebData(countryCode = 'MX') {
-  // Auto-convert 2-letter → 3-letter using our mapping
-  const iso3Map = {
-    "MX": "MEX", "PH": "PHL", "TR": "TUR", "SY": "SYR",
-    "UA": "UKR", "AF": "AFG", "US": "USA", "GLOBAL": "GLOBAL"
-  };
-  const iso3 = iso3Map[countryCode] || countryCode; // fallback if already 3-letter
+  const iso3Map = { "MX":"MEX","PH":"PHL","TR":"TUR","SY":"SYR","UA":"UKR","AF":"AFG","US":"USA","GLOBAL":"GLOBAL" };
+  const iso3 = iso3Map[countryCode] || countryCode;
 
   try {
-    const response = await fetch(`https://api.reliefweb.int/v1/reports?appname=jedicorps&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`);
-    const json = await response.json();
+    const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=jedicorps&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`);
+    const json = await res.json();
 
     const tbody = document.querySelector('#mission-table tbody');
-    tbody.innerHTML = '';
+    tbody.innerHTML = ''; // clear everything
+
+    if (json.data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7">No live reports for this country yet</td></tr>';
+      return;
+    }
 
     json.data.forEach(item => {
       const f = item.fields;
       const date = f.date?.created?.slice(0,10) || 'N/A';
-      const hearts = '💜'.repeat(Math.min(5, (f.theme?.length || 0) + (f.format?.length > 2 ? 2 : 1)));
-      const title = f.title || 'No title';
+      const hearts = 'Purple Heart'.repeat(Math.min(5, (f.theme?.length || 0) + (f.format?.length > 1 ? 2 : 1)));
+      const title = f.title || 'Untitled';
 
-      const row = `<tr>
+      tbody.innerHTML += `<tr>
         <td>${date}</td>
         <td class="impact">${hearts}</td>
         <td>${title}</td>
         <td>Ongoing</td>
         <td>—</td>
         <td>—</td>
-        <td><a href="${item.href}" target="_blank">View</a></td>
+        <td><a href="${item.href}" target="_blank">View →</a></td>
       </tr>`;
-      tbody.innerHTML += row;
     });
 
-    if (json.data.length === 0) tbody.innerHTML = '<tr><td colspan="7">No reports yet – try another country</td></tr>';
-
-  } catch (err) {
-    console.error('ReliefWeb error:', err);
-    document.querySelector('#mission-table tbody').innerHTML = '<tr><td colspan="7">Live data offline – samples shown</td></tr>';
+  } catch (e) {
+    document.querySelector('#mission-table tbody').innerHTML = '<tr><td colspan="7">Live data offline – showing samples</td></tr>';
   }
 }
 
-// Default to Mexico on load, later we'll hook the dropdown
+// Load Mexico by default
 document.addEventListener('DOMContentLoaded', () => loadReliefWebData('MX'));
-
 </script>
+
 
   <p><em>Filters: Track (Pink/White/Purple) | Country | Impact ≥ | Transparency Score</em></p>
 <div style="text-align:center; margin:40px; color:#9370db; font-size:18px;">

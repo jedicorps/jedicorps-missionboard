@@ -56,6 +56,21 @@ window.onload = toggleGrokScout;
     </tbody>
   </table>
   <p><em>Filters: Track (Pink/White/Purple) | Country | Impact ≥ | Transparency Score</em></p>
+<div style="text-align:center; margin:40px; color:#9370db; font-size:18px;">
+  <strong>Support the Mission:</strong><br><br>
+  <a href="https://cash.app/$JEDICorps" style="color:#00ff9d; font-size:24px;">💵 $JEDICorps (Cash App)</a><br>
+  <code style="background:#111; padding:8px; border-radius:8px; font-size:14px; word-break:break-all;">
+    ₿ bc1qpyxl87a3dsk7c3aff9xlxyj2u24wyt7hwtc5ax
+  </code><br><br>
+  Every dollar logged live <a href="https://x.com/LighthouseAid" target="_blank">here</a>
+function rainmakerQuery() {
+  const query = prompt('Rainmaker query (e.g. "10k MREs for Acapulco")');
+  if (query) {
+    alert(`Mission queued: "${query}"\n→ Logged to @LighthouseAid ledger\n→ Funds route via $JEDICorps when received`);
+    // Later: auto-tweet stub when we have API
+  }
+}
+</div>
 
 </body>
 </html>

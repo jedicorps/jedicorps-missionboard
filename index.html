@@ -17,42 +17,10 @@
 <body>
   <h1>JEDI Corps Mission Board 💜⚡️</h1>
   <p>Humanitarian Dashboard: Forex Factory for Philanthropy. Live data incoming...</p>
-<div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-weight:bold;"></div>
-<button id="grok-btn" class="grok-btn" onclick="RainmakerQuery()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
+  <div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-weight:bold;"></div>
+  <button id="grok-btn" class="grok-btn" onclick="rainmakerQuery()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
 
-<script>
-function toggleGrokScout() {
-  const cookies = document.cookie;
-  const isLoggedInX = cookies.includes('auth_token') || cookies.includes('twid');
-  const status = document.getElementById('user-status');
-  const btn = document.getElementById('grok-btn');
-  
-  console.log('All cookies:', cookies);
-  console.log('X login detected?', isLoggedInX);
-  
-  if (isLoggedInX) {
-    status.innerHTML = 'X Verified – Grok Scout Active!';
-    btn.innerHTML = 'Rainmaker Ready: "Submit purchase req for MREs?"';
-    btn.style.background = '#4a90e2';
-  } else {
-    status.innerHTML = 'X Login Not Detected – Open x.com, log in, then refresh.';
-    btn.style.background = '#9370db';
-    btn.onclick = () => { window.open('https://x.com/login', '_blank'); alert('Logged in? Refresh this page.'); };
-  }
-}
-window.onload = toggleGrokScout;
-  function rainmakerQuery() {
-  const query = prompt('Rainmaker query (e.g. "10k MREs for Acapulco")');
-  if (query) {
-    alert(`Mission queued: "${query}"\n→ Logged to @LighthouseAid ledger\n→ Funds route via $JEDICorps when received`);
-    // Later: auto-tweet stub when we have API
-  }
-}
-</div>
-
-</script>
-  <table>
-
+  <table id="mission-table">
     <thead>
       <tr>
         <th>Date/Time</th><th>Impact</th><th>Event/Report</th><th>Actual</th><th>Target/Forecast</th><th>Previous</th><th>Grokipedia</th>
@@ -66,61 +34,87 @@ window.onload = toggleGrokScout;
     </tbody>
   </table>
 
-<script>
-async function loadReliefWebData(countryCode = 'MX') {
-  const iso3Map = { "MX":"MEX","PH":"PHL","TR":"TUR","SY":"SYR","UA":"UKR","AF":"AFG","US":"USA","GLOBAL":"GLOBAL" };
-  const iso3 = iso3Map[countryCode] || countryCode;
+  <p><em>Filters: Track (Pink/White/Purple) | Country | Impact ≥ | Transparency Score</em></p>
+  <div style="text-align:center; margin:40px; color:#9370db; font-size:18px;">
+    <strong>Support the Mission:</strong><br><br>
+    <a href="https://cash.app/$JEDICorps" style="color:#00ff9d; font-size:24px;">💵 $JEDICorps (Cash App)</a><br>
+    <code style="background:#111; padding:8px; border-radius:8px; font-size:14px; word-break:break-all;">
+      ₿ bc1qpyxl87a3dsk7c3aff9xlxyj2u24wyt7hwtc5ax
+    </code><br><br>
+    Every dollar logged live <a href="https://x.com/LighthouseAid" target="_blank">here</a>
+  </div>
 
-  try {
-    const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=jedicorps&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`);
-    const json = await res.json();
+  <script>
+    function toggleGrokScout() {
+      const cookies = document.cookie;
+      const isLoggedInX = cookies.includes('auth_token') || cookies.includes('twid');
+      const status = document.getElementById('user-status');
+      const btn = document.getElementById('grok-btn');
+      
+      console.log('All cookies:', cookies);
+      console.log('X login detected?', isLoggedInX);
+      
+      if (isLoggedInX) {
+        status.innerHTML = 'X Verified – Grok Scout Active!';
+        btn.innerHTML = 'Rainmaker Ready: "10k MREs for Acapulco?"';
+        btn.style.background = '#4a90e2';
+      } else {
+        status.innerHTML = 'X Login Not Detected – Open x.com, log in, then refresh.';
+        btn.style.background = '#9370db';
+        btn.onclick = () => { window.open('https://x.com/login', '_blank'); alert('Logged in? Refresh this page.'); };
+      }
+    }
+    function rainmakerQuery() {
+      const query = prompt('Rainmaker query (e.g. "10k MREs for Acapulco")');
+      if (query) {
+        alert(`Mission queued: "${query}"\n→ Logged to @LighthouseAid ledger\n→ Funds route via $JEDICorps when received`);
+        // Later: auto-tweet stub when we have API
+      }
+    }
+    async function loadReliefWebData(countryCode = 'MX') {
+      const iso3Map = { "MX":"MEX","PH":"PHL","TR":"TUR","SY":"SYR","UA":"UKR","AF":"AFG","US":"USA","GLOBAL":"GLOBAL" };
+      const iso3 = iso3Map[countryCode] || countryCode;
 
-    const tbody = document.querySelector('#mission-table tbody');
-    tbody.innerHTML = ''; // clear everything
+      try {
+        const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=jedicorps&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`);
+        const json = await res.json();
 
-    if (json.data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7">No live reports for this country yet</td></tr>';
-      return;
+        const tbody = document.querySelector('#mission-table tbody');
+        tbody.innerHTML = ''; // clear everything
+
+        if (json.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7">No live reports for this country yet</td></tr>';
+          return;
+        }
+
+        json.data.forEach(item => {
+          const f = item.fields;
+          const date = f.date?.created?.slice(0,10) || 'N/A';
+          const hearts = '💜'.repeat(Math.min(5, (f.theme?.length || 0) + (f.format?.length > 1 ? 2 : 1)));
+          const title = f.title || 'Untitled';
+
+          tbody.innerHTML += `<tr>
+            <td>${date}</td>
+            <td class="impact">${hearts}</td>
+            <td>${title}</td>
+            <td>Ongoing</td>
+            <td>—</td>
+            <td>—</td>
+            <td><a href="${item.href}" target="_blank">View →</a></td>
+          </tr>`;
+        });
+
+      } catch (e) {
+        console.error('ReliefWeb error:', e);
+        document.querySelector('#mission-table tbody').innerHTML = '<tr><td colspan="7">Live data offline – showing samples</td></tr>';
+      }
     }
 
-    json.data.forEach(item => {
-      const f = item.fields;
-      const date = f.date?.created?.slice(0,10) || 'N/A';
-      const hearts = 'Purple Heart'.repeat(Math.min(5, (f.theme?.length || 0) + (f.format?.length > 1 ? 2 : 1)));
-      const title = f.title || 'Untitled';
-
-      tbody.innerHTML += `<tr>
-        <td>${date}</td>
-        <td class="impact">${hearts}</td>
-        <td>${title}</td>
-        <td>Ongoing</td>
-        <td>—</td>
-        <td>—</td>
-        <td><a href="${item.href}" target="_blank">View →</a></td>
-      </tr>`;
-    });
-
-  } catch (e) {
-    document.querySelector('#mission-table tbody').innerHTML = '<tr><td colspan="7">Live data offline – showing samples</td></tr>';
-  }
-}
-
-// Load Mexico by default
-document.addEventListener('DOMContentLoaded', () => loadReliefWebData('MX'));
-</script>
-
-
-  <p><em>Filters: Track (Pink/White/Purple) | Country | Impact ≥ | Transparency Score</em></p>
-<div style="text-align:center; margin:40px; color:#9370db; font-size:18px;">
-  <strong>Support the Mission:</strong><br><br>
-  <a href="https://cash.app/$JEDICorps" style="color:#00ff9d; font-size:24px;">💵 $JEDICorps (Cash App)</a><br>
-  <code style="background:#111; padding:8px; border-radius:8px; font-size:14px; word-break:break-all;">
-
-    ₿ bc1qpyxl87a3dsk7c3aff9xlxyj2u24wyt7hwtc5ax
-  </code><br><br>
-  Every dollar logged live <a href="https://x.com/LighthouseAid" target="_blank">here</a>
-
-</div>
-    
+    // Run on load
+    window.onload = () => {
+      toggleGrokScout();
+      loadReliefWebData('MX');
+    };
+  </script>
 </body>
 </html>

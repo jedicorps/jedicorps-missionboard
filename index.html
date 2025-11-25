@@ -17,13 +17,30 @@
 <body>
   <h1>JEDI Corps Mission Board 💜⚡️</h1>
   <p>Humanitarian Dashboard: Forex Factory for Philanthropy. Live data incoming...</p>
-  <script src="https://cdn.jsdelivr.net/npm/@x/login@latest"></script>
-<x-login 
-  button-text="Grok Scout – Login with X to Activate"
-  theme="dark"
-  size="large"
-  redirect-uri="https://jedicorps.app">
-</x-login>
+  <div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-weight:bold;"></div>
+
+<button id="grok-btn" class="grok-btn" onclick="toggleGrokScout()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
+
+<script>
+function toggleGrokScout() {
+  // Check for X login cookies (auth_token or twid = real user)
+  const isLoggedInX = document.cookie.includes('auth_token') || document.cookie.includes('twid');
+  const status = document.getElementById('user-status');
+  const btn = document.getElementById('grok-btn');
+  
+  if (isLoggedInX) {
+    status.innerHTML = '✅ X Verified – Grok Scout Active! 💜';
+    btn.innerHTML = 'Rainmaker Ready: "10k MREs for Acapulco?"';
+    btn.style.background = '#4a90e2'; // Blue for unlocked
+    btn.onclick = () => alert('Query sent to Grok! (Stub – full Rainmaker next)'); // Placeholder
+  } else {
+    status.innerHTML = '⚠️ Not detected – Open x.com in another tab, log in, then refresh.';
+    btn.style.background = '#9370db'; // Purple for locked
+  }
+}
+// Run on load
+window.onload = toggleGrokScout;
+</script>
   <table>
     <thead>
       <tr>

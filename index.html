@@ -52,6 +52,7 @@ window.onload = toggleGrokScout;
 
 </script>
   <table>
+
     <thead>
       <tr>
         <th>Date/Time</th><th>Impact</th><th>Event/Report</th><th>Actual</th><th>Target/Forecast</th><th>Previous</th><th>Grokipedia</th>
@@ -64,6 +65,58 @@ window.onload = toggleGrokScout;
       <tr><td>05 Dec 2025</td><td class="impact">💜💜</td><td>Türkiye-Syria EQ Appeal Close-out</td><td>68% funded</td><td>100%</td><td>72% (prior)</td><td><a href="#">[Stub]</a></td></tr>
     </tbody>
   </table>
+<script>
+async function loadReliefWebData() {
+  const body = JSON.stringify({
+    appname: 'jedicorps',
+    limit: 5,
+    filter: { field: 'primary_country.name', value: 'Mexico' }, // Swap 'Mexico' for any ISO code
+    fields: { include: ['date.created', 'headline', 'primary_country.name', 'format'] },
+    sort: { field: 'date.created', order: 'desc' }
+  });
+  
+  try {
+    const response = await fetch('https://api.reliefweb.int/v2/reports', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body
+    });
+    const data = await response.json();
+    
+    const tbody = document.querySelector('#mission-table tbody');
+    tbody.innerHTML = ''; // Clear samples
+    
+    data.data.forEach(report => {
+      const fields = report.fields;
+      const date = fields['date.created']?.slice(0, 10) || 'N/A';
+      const impact = '💜'.repeat(Math.min(5, fields.format?.length || 1));
+      const event = fields.headline || 'N/A';
+      const actual = fields['primary_country.name'] || 'Ongoing';
+      
+      const row = tbody.insertRow();
+      row.innerHTML = `
+        <td>${date}</td>
+        <td class="impact">${impact}</td>
+        <td>${event}</td>
+        <td>${actual}</td>
+        <td>Ongoing</td>
+        <td>N/A</td>
+        <td><a href="https://reliefweb.int/report/${report.id}" target="_blank">Stub</a></td>
+      `;
+    });
+  } catch (error) {
+    console.error('ReliefWeb fetch failed:', error); // Fallback to samples if offline
+  }
+}
+
+// Load on page ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadReliefWebData);
+} else {
+  loadReliefWebData();
+}
+</script>
+
   <p><em>Filters: Track (Pink/White/Purple) | Country | Impact ≥ | Transparency Score</em></p>
 <div style="text-align:center; margin:40px; color:#9370db; font-size:18px;">
   <strong>Support the Mission:</strong><br><br>

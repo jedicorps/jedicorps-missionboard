@@ -17,9 +17,9 @@
 <body>
   <h1>JEDI Corps Mission Board 💜⚡️</h1>
   <p>Humanitarian Dashboard: Forex Factory for Philanthropy. Live data updating...</p>
-<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Futureproof Philanthropy is live on the Mission Board" data-via="JEDICorps" data-hashtags="StandUpTheForce" data-related="LighthouseAid,LighthouseTeams" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8">
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Futureproof Philanthropy is live on the Mission Board" data-via="JEDICorps" data-hashtags="StandUpTheForce" data-related="LighthouseAid,LighthouseTeams" data-show-count="false">Tweet</a>
   
-  <div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-weight:bold;"></div>
+  <div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-size:16px; font-weight:bold;"></div>
   <button id="grok-btn" class="grok-btn" onclick="rainmakerQuery()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
 <div style="text-align:center; margin:20px 0;">
   <label for="countrySelect" style="font-weight:bold; color:#4a90e2; margin-right:10px;">Select Country →</label>
@@ -71,7 +71,7 @@
       
       if (isLoggedInX) {
         status.innerHTML = 'X Verified – Grok Scout Active!';
-        btn.innerHTML = 'Rainmaker Ready: "10k MREs for Acapulco?"';
+        btn.innerHTML = 'Rainmaker Ready: "Submit purchase request?"';
         btn.style.background = '#4a90e2';
       } else {
         status.innerHTML = 'X Login Not Detected – Open x.com, log in, then refresh.';
@@ -80,7 +80,7 @@
       }
     }
     function rainmakerQuery() {
-      const query = prompt('Rainmaker query (e.g. "10k MREs for Acapulco")');
+      const query = prompt('Rainmaker query (e.g. "Submit purchase request")');
       if (query) {
         alert(`Mission queued: "${query}"\n→ Logged to @LighthouseAid ledger\n→ Funds route via $JEDICorps when received`);
         // Later: auto-tweet stub when we have API
@@ -136,6 +136,7 @@ window.onload = () => {
   loadReliefWebData('MX'); // default
 };
 
+    async src="https://platform.twitter.com/widgets.js" charset="utf-8"
 </script>
 
 </body>

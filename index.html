@@ -55,7 +55,7 @@
     </div>
     <code style="background:#111; padding:8px; border-radius:8px; font-size:14px; text-align:center; word-break:break-all;">
       ₿ bc1qpyxl87a3dsk7c3aff9xlxyj2u24wyt7hwtc5ax
-    </code><br><br>
+    </code><br>
     Every dollar logged live <a href="https://x.com/LighthouseAid" target="_blank">@LigthouseAid</a>
   </div>
 
@@ -86,6 +86,9 @@
         // Later: auto-tweet stub when we have API
       }
     }
+    const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=JEDICorps-MissionBoardG0L1v3-hWJvBRGPXz78&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`, {
+  headers: { 'User-Agent': 'JEDI Corps Mission Board v1.0 (+https://jedicorps.app)' }
+});
 
 async function loadReliefWebData(countryCode = 'MX') {
   const iso3Map = { "MX":"MEX","PH":"PHL","TR":"TUR","SY":"SYR","UA":"UKR","AF":"AFG","US":"USA","GLOBAL":"GLOBAL" };

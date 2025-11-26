@@ -76,10 +76,9 @@ async function loadReliefWebData(countryCode = 'MX') {
   const iso3 = iso3Map[countryCode] || countryCode;
 
   try {
-    const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=jedicorps&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`, {
-      headers: {
-        'User-Agent': 'JEDI Corps Mission Board v1.0 (+https://jedicorps.app)'
-      }
+   const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=JEDICorps-MissionBoardG0L1v3-hWJvBRGPXz78&limit=10&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`, {
+  headers: { 'User-Agent': 'JEDI Corps Mission Board v1.0 (+https://jedicorps.app)' }
+   }
     });
     const json = await res.json();
 

@@ -18,7 +18,7 @@
   <h1>JEDI Corps Mission Board 💜⚡️</h1>
   <p>Humanitarian Dashboard: Forex Factory for Philanthropy. Live data updating...</p>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Futureproof Philanthropy is live on the Mission Board" data-via="JEDICorps" data-hashtags="StandUpTheForce" data-related="LighthouseAid,LighthouseTeams" data-show-count="false">Tweet</a>
-  
+ 
   <div id="user-status" style="text-align:center; margin:20px; color:#9370db; font-size:16px; font-weight:bold;"></div>
   <button id="grok-btn" class="grok-btn" onclick="rainmakerQuery()">Grok Scout (AI Assist) – Verify X Login to Activate</button>
 <div style="text-align:center; margin:20px 0;">
@@ -65,10 +65,10 @@
       const isLoggedInX = cookies.includes('auth_token') || cookies.includes('twid');
       const status = document.getElementById('user-status');
       const btn = document.getElementById('grok-btn');
-      
+     
       console.log('All cookies:', cookies);
       console.log('X login detected?', isLoggedInX);
-      
+     
       if (isLoggedInX) {
         status.innerHTML = 'X Verified – Grok Scout Active!';
         btn.innerHTML = 'Rainmaker Ready: "Submit purchase request?"';
@@ -90,51 +90,6 @@
 async function loadReliefWebData(countryCode = 'MX') {
   const iso3Map = { "MX":"MEX","PH":"PHL","TR":"TUR","SY":"SYR","UA":"UKR","AF":"AFG","US":"USA","GLOBAL":"GLOBAL" };
   const iso3 = iso3Map[countryCode] || countryCode;
-
-  // Show loading
-  const tbody = document.querySelector('#mission-table tbody');
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#9370db;">Loading live data...</td></tr>';
-
-  try {
-    const res = await fetch(`https://api.reliefweb.int/v1/reports?appname=JEDICorps-MissionBoardG0L1v3-hWJvBRGPXz78&limit=12&sort=date:desc&preset=latest&filter[operator]=AND&filter[conditions][0][field]=country.iso3&filter[conditions][0][value]=${iso3}`, {
-      headers: { 'User-Agent': 'JEDI Corps Mission Board v1.0 (+https://jedicorps.app)' }
-    });
-    const json = await res.json();
-
-    tbody.innerHTML = ''; // clear loading
-
-    if (!json.data || json.data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7">No active reports right now — check back soon</td></tr>';
-      return;
-    }
-
-    json.data.forEach(item => {
-      const f = item.fields;
-      const date = f.date?.created?.slice(0,10) || 'N/A';
-      const hearts = 'Heart'.repeat(Math.min(5, (f.theme?.length || 1) + (f.disaster?.length > 0 ? 1 : 0)));
-      const title = f.title || 'Untitled Report';
-
-      tbody.innerHTML += `<tr>
-        <td>${date}</td>
-        <td class="impact">${hearts}</td>
-        <td>${title}</td>
-        <td>Ongoing</td>
-        <td>—</td>
-        <td>—</td>
-        <td><a href="${item.href}" target="_blank">View</a></td>
-      </tr>`;
-    });
-
-  } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="7">Live data temporarily offline — showing samples</td></tr>';
-  }
-}
-
-// Load on start + dropdown triggers it
-window.onload = () => {
-  toggleGrokScout();
-  loadReliefWebData('MX'); // default
-};
 
     async src="https://platform.twitter.com/widgets.js" charset="utf-8"
 </script>
